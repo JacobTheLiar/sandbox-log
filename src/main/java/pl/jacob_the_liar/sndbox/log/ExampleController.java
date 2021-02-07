@@ -22,7 +22,12 @@ public class ExampleController{
     
     @GetMapping("/")
     public String exampleGet(){
-        log.info("Hello!");
+        log.trace("===  This will be printed on trace");
+        log.debug("===  This will be printed on debug");
+        log.info("===  This will be printed on info");
+        log.warn("===  This will be printed on warn");
+        log.error("===  This will be printed on error");
+        
         return "Hello from log example";
     }
     
