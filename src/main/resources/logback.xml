@@ -1,0 +1,23 @@
+<configuration scan="true">
+
+    <property name="LOG_NAME" value="logs/"/>
+
+    <!-- log message pattern used in logged files -->
+    <property name="MESSAGE_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- appender to usage in console -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${MESSAGE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- enabling appends by theirs names, and set logging max level -->
+    <root level="trace">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <!-- https://www.baeldung.com/logback -->
+</configuration>
