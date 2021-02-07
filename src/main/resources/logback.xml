@@ -51,11 +51,19 @@
 
     </appender>
 
+    <!-- asynchronous logging will allow for faster log processing -->
+    <appender name="ASYNC_FILE_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE-ROLLING" />
+    </appender>
+
+
+
 
     <!-- enabling appends by theirs names, and set logging max level -->
     <root level="trace">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE_APPENDER"/>
+        <!--<appender-ref ref="FILE_APPENDER"/>-->
+        <appender-ref ref="ASYNC_FILE_APPENDER"/>
     </root>
 
     <!-- https://www.baeldung.com/logback -->
