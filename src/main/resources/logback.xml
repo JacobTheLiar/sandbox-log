@@ -7,9 +7,16 @@
     <!-- log message pattern used in logged files -->
     <property name="MESSAGE_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
 
-    <!-- log file name property for all logs appender-->
+    <!-- log file names properties for log appenders-->
     <property name="FILE_LOG" value="${LOG_FOLDER}/application.log"/>
     <property name="FILE_ZIP" value="${LOG_FOLDER}/archive/%d{yyyy-MM-dd}-%i.log.zip"/>
+    <property name="FILE_WARN" value="${LOG_FOLDER}/warn.log"/>
+    <property name="FILE_WARN_ZIP" value="${LOG_FOLDER}/archive/%d{yyyy-MM-dd}-%i.warn.log.zip"/>
+    <property name="FILE_INFO" value="${LOG_FOLDER}/info.log"/>
+    <property name="FILE_INFO_ZIP" value="${LOG_FOLDER}/archive/%d{yyyy-MM-dd}-%i.info.log.zip"/>
+
+
+
 
     <!-- appender to usage in console -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -18,6 +25,8 @@
             <pattern>${MESSAGE_PATTERN}</pattern>
         </encoder>
     </appender>
+
+
 
 
     <!-- appender for all logs file -->
@@ -46,8 +55,6 @@
             <!-- In this case if the archive exceeds the maximum capacity the archive will be deleted early.
                  If there is no overflow, the archive will be kept for the specified number of days -->
         </rollingPolicy>
-
-
     </appender>
 
     <!-- asynchronous logging will allow for faster log processing -->
@@ -56,19 +63,113 @@
     </appender>
 
 
-    <!-- enabling appends by theirs names, and set logging max level. logger name is package name set to monitor -->
+
+
+
+    <!--appender for all errors and warnings without info, debug and trace -->
+    <appender name="WARNING_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- set current file log name using previous property-->
+        <file>${FILE_WARN}</file>
+
+        <!-- set encoder to set what will be in file using property-->
+        <encoder>
+            <pattern>${MESSAGE_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- set archive name pattern for logs using property-->
+            <fileNamePattern>${FILE_WARN_ZIP}</fileNamePattern>
+
+            <!-- capacity of the file beyond which it will be packed  -->
+            <maxFileSize>100MB</maxFileSize>
+
+            <!-- the size of the archive beyond which old archives will be deleted -->
+            <totalSizeCap>2GB</totalSizeCap>
+
+            <!-- number of days for which the archive will be stored, the later ones will be deleted -->
+            <maxHistory>120</maxHistory>
+
+            <!-- In this case if the archive exceeds the maximum capacity the archive will be deleted early.
+                 If there is no overflow, the archive will be kept for the specified number of days -->
+        </rollingPolicy>
+
+        <!-- maximum level to log, in this case error and warning-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <!-- asynchronous logging will allow for faster log processing -->
+    <appender name="ASYNC_WARNING_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="WARNING_APPENDER"/>
+    </appender>
+
+
+
+
+    <!--appender for all errors and warnings without info, debug and trace -->
+    <appender name="INFO_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- set current file log name using previous property-->
+        <file>${FILE_INFO}</file>
+
+        <!-- set encoder to set what will be in file using property-->
+        <encoder>
+            <pattern>${MESSAGE_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- set archive name pattern for logs using property-->
+            <fileNamePattern>${FILE_INFO_ZIP}</fileNamePattern>
+
+            <!-- capacity of the file beyond which it will be packed  -->
+            <maxFileSize>200MB</maxFileSize>
+
+            <!-- the size of the archive beyond which old archives will be deleted -->
+            <totalSizeCap>1GB</totalSizeCap>
+
+            <!-- number of days for which the archive will be stored, the later ones will be deleted -->
+            <maxHistory>30</maxHistory>
+
+            <!-- In this case if the archive exceeds the maximum capacity the archive will be deleted early.
+                 If there is no overflow, the archive will be kept for the specified number of days -->
+        </rollingPolicy>
+
+        <!-- selected log level to log, in this case only info-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- asynchronous logging will allow for faster log processing -->
+    <appender name="ASYNC_INFO_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="INFO_APPENDER"/>
+    </appender>
+
+
+    <!-- enabling appends by theirs names, and set logging max level. logger.name is package name set to monitor -->
     <logger name="pl.jacob_the_liar" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
         <!--<appender-ref ref="FILE_APPENDER"/>-->
         <appender-ref ref="ASYNC_FILE_APPENDER"/>
+        <appender-ref ref="ASYNC_WARNING_APPENDER"/>
+        <appender-ref ref="ASYNC_INFO_APPENDER"/>
     </logger>
+
+    <!-- register separate appenders for spring framework-->
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ASYNC_FILE_APPENDER"/>
+        <appender-ref ref="ASYNC_WARNING_APPENDER"/>
+    </logger>
+
 
 
     <!-- enabling appends by theirs names, and set logging max level.
          root is default logger for everything -->
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="STDOUT"/>
-        <!--<appender-ref ref="FILE_APPENDER"/>-->
         <appender-ref ref="ASYNC_FILE_APPENDER"/>
     </root>
 
