@@ -1,4 +1,4 @@
-package pl.jacob_the_liar.sndbox.log;
+package pl.jacob_the_liar.sandbox.log;
 
 
 /**
@@ -27,6 +27,10 @@ public class ExampleController{
         log.info("===  This will be printed on info");
         log.warn("===  This will be printed on warn");
         log.error("===  This will be printed on error");
+        
+        for (int i=0; i<10000; i++){
+            log.trace("iteration process no {}", i);
+        }
         
         return "Hello from log example";
     }

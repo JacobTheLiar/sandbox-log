@@ -1,9 +1,15 @@
 <configuration scan="true">
 
-    <property name="LOG_NAME" value="logs/"/>
+
+    <!-- add log folder property for future use-->
+    <property name="LOG_FOLDER" value="logs/log-app"/>
 
     <!-- log message pattern used in logged files -->
     <property name="MESSAGE_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- log file name property for all logs appender-->
+    <property name="FILE_LOG" value="${LOG_FOLDER}/application.log"/>
+    <property name="FILE_ZIP" value="${LOG_FOLDER}/archive/%d{yyyy-MM-dd}-%i.log.zip"/>
 
     <!-- appender to usage in console -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -14,9 +20,42 @@
     </appender>
 
 
+    <!-- appender for all logs file -->
+    <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- set current file log name using previous property-->
+        <file>${FILE_LOG}</file>
+
+        <!-- set encoder to set what will be in file using property-->
+        <encoder>
+            <pattern>${MESSAGE_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- set archive name pattern for logs using property-->
+            <fileNamePattern>${FILE_ZIP}</fileNamePattern>
+
+            <!-- capacity of the file beyond which it will be packed  -->
+            <maxFileSize>1MB</maxFileSize>
+
+            <!-- the size of the archive beyond which old archives will be deleted -->
+            <totalSizeCap>2GB</totalSizeCap>
+
+            <!-- number of days for which the archive will be stored, the later ones will be deleted -->
+            <maxHistory>60</maxHistory>
+
+            <!-- In this case if the archive exceeds the maximum capacity the archive will be deleted early.
+                 If there is no overflow, the archive will be kept for the specified number of days -->
+        </rollingPolicy>
+
+
+
+    </appender>
+
+
     <!-- enabling appends by theirs names, and set logging max level -->
     <root level="trace">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE_APPENDER"/>
     </root>
 
     <!-- https://www.baeldung.com/logback -->

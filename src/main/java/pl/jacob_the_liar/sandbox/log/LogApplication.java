@@ -1,4 +1,4 @@
-package pl.jacob_the_liar.sndbox.log;
+package pl.jacob_the_liar.sandbox.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

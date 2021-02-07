@@ -1,4 +1,4 @@
-package pl.jacob_the_liar.sndbox.log;
+package pl.jacob_the_liar.sandbox.log;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
