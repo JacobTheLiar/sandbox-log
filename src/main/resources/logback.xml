@@ -48,20 +48,26 @@
         </rollingPolicy>
 
 
-
     </appender>
 
     <!-- asynchronous logging will allow for faster log processing -->
     <appender name="ASYNC_FILE_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="FILE_APPENDER" />
+        <appender-ref ref="FILE_APPENDER"/>
     </appender>
 
 
+    <!-- enabling appends by theirs names, and set logging max level. logger name is package name set to monitor -->
+    <logger name="pl.jacob_the_liar" level="trace" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="FILE_APPENDER"/>-->
+        <appender-ref ref="ASYNC_FILE_APPENDER"/>
+    </logger>
 
 
-    <!-- enabling appends by theirs names, and set logging max level -->
-    <root level="trace">
-        <appender-ref ref="STDOUT" />
+    <!-- enabling appends by theirs names, and set logging max level.
+         root is default logger for everything -->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
         <!--<appender-ref ref="FILE_APPENDER"/>-->
         <appender-ref ref="ASYNC_FILE_APPENDER"/>
     </root>
